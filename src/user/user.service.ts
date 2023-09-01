@@ -2,16 +2,16 @@ import {
   ConflictException,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
-import { User } from './schemas/user.schema';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import * as mongoose from "mongoose";
+import { User } from "./schemas/user.schema";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
-    private userModel: mongoose.Model<User>,
+    private userModel: mongoose.Model<User>
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -25,7 +25,7 @@ export class UserService {
   async createUser(user: User): Promise<User> {
     const existingUser = await this.findByUsername(user.username);
     if (existingUser) {
-      throw new ConflictException('Username already exists');
+      throw new ConflictException("Username already exists");
     }
     const newUser = new this.userModel(user);
     return newUser.save();
@@ -35,11 +35,11 @@ export class UserService {
     const user = await this.userModel.findOne({ username }).exec();
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     if (!user.comparePassword(password)) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     return user;

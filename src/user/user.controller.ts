@@ -11,7 +11,8 @@ import { UserService } from "./user.service";
 import { User } from "./schemas/user.schema";
 import { AuthService } from "./auth.service";
 
-import { Login } from "./login.mode";
+import { Login } from "./model/login.model";
+import { Registration } from "./model/registration.user.model";
 
 @Controller("users")
 export class UserController {
@@ -26,11 +27,12 @@ export class UserController {
   }
 
   @Post("create")
-  async createUser(@Body() user: User): Promise<User> {
+  async createUser(@Body() user: Registration): Promise<User> {
+    user.role = "user";
     let response;
     try {
       const data = await this.userService.createUser(user);
-      console.log(data);
+
       response = { status: "Successfully created User", details: data };
     } catch (error) {
       response = new HttpException(
@@ -40,6 +42,24 @@ export class UserController {
     }
     return response;
   }
+
+  // When we need admin
+
+  // @Post("createadmin")
+  // async createAdmin(@Body() user: User): Promise<User> {
+  //   let response;
+  //   try {
+  //     const data = await this.userService.createUser(user);
+  //     console.log(data);
+  //     response = { status: "Successfully created User", details: data };
+  //   } catch (error) {
+  //     response = new HttpException(
+  //       "Couldn't create the user",
+  //       HttpStatus.BAD_REQUEST
+  //     );
+  //   }
+  //   return response;
+  // }
 
   @Post("login")
   async loginUser(@Body() loginData: Login) {
@@ -51,6 +71,7 @@ export class UserController {
         loginData.password
       );
       userDetails = await this.userService.findByUsername(loginData.username);
+      //console.log(userDetails);
       const { username, lastname, firstname, email } = userDetails;
       if (!user) {
         throw new HttpException("Invalid credentials", HttpStatus.UNAUTHORIZED);
@@ -72,7 +93,7 @@ export class UserController {
       const decodedToken = await this.authService.validateToken(
         req.headers.authorization
       );
-      console.log(decodedToken);
+      //console.log(decodedToken);
       return { status: "Access granted", tokenDetails: decodedToken };
     } catch (error) {
       throw error;

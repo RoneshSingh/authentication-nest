@@ -26,9 +26,10 @@ export class AuthService {
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
+      role: user.role,
       sub: user._id,
     };
-    console.log(payload);
+    //console.log(payload);
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -37,7 +38,7 @@ export class AuthService {
   async validateToken(token: string): Promise<any> {
     try {
       const decoded = this.jwtService.verify(token);
-      console.log(decoded);
+      //console.log(decoded);
       return { decoded };
     } catch (error) {
       if (error.name === "TokenExpiredError") {
