@@ -45,21 +45,21 @@ export class UserController {
 
   // When we need admin
 
-  // @Post("createadmin")
-  // async createAdmin(@Body() user: User): Promise<User> {
-  //   let response;
-  //   try {
-  //     const data = await this.userService.createUser(user);
-  //     console.log(data);
-  //     response = { status: "Successfully created User", details: data };
-  //   } catch (error) {
-  //     response = new HttpException(
-  //       "Couldn't create the user",
-  //       HttpStatus.BAD_REQUEST
-  //     );
-  //   }
-  //   return response;
-  // }
+  @Post("createadmin")
+  async createAdmin(@Body() user: User): Promise<User> {
+    let response;
+    try {
+      const data = await this.userService.createUser(user);
+      console.log(data);
+      response = { status: "Successfully created User", details: data };
+    } catch (error) {
+      response = new HttpException(
+        "Couldn't create the user",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    return response;
+  }
 
   @Post("login")
   async loginUser(@Body() loginData: Login) {
